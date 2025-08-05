@@ -18,15 +18,11 @@ type Config struct {
 }
 
 func Configure(c Config) (container.Container, error) {
-	// load sources
-    source.Sources["env"] = source.EnvSource{}
+    source.RegisterSource("env", source.EnvSource{})
 
-
-	// load config
     container := container.Container{}
     container.Init()
     for _, entry := range c.Entries {
-        // implement getting via source here
         source := source.Sources[entry.Source]
         value, err := source.Get(entry.Name)
         if err != nil || value == "" {
@@ -35,6 +31,5 @@ func Configure(c Config) (container.Container, error) {
         container.Add(entry.Name, value)
     }
 
-	//get a soda
 	return container, nil
 }
